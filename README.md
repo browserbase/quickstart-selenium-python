@@ -12,7 +12,10 @@
 </p>
 <br/>
 
-## Selenium (Python) with Browserbase
+## Selenium with Browserbase
+
+## Introduction
+
 Browserbase is the best developer platform to reliably run, manage, and monitor headless browsers.
 
 Get browsers' complete control and leverage Browserbase's
@@ -22,7 +25,6 @@ and LLM data retrievals.
 
 **Get started in under one minute** with Selenium.
 
-
 ## Setup
 
 ### 1. Install dependencies
@@ -31,21 +33,30 @@ and LLM data retrievals.
 pip install -r requirements.txt
 ```
 
-
-### 2. Get your Browserbase API Key:
-
-- [Create an account](https://www.browserbase.com/sign-up) or [log in to Browserbase](https://www.browserbase.com/sign-in)
-- Copy your API Key and Project ID [from your Settings page](https://www.browserbase.com/settings)
-
-### 3. Run the script:
+Alternatively, we suggest using [Poetry](https://python-poetry.org/) to manage your dependencies.
 
 ```bash
-BROWSERBASE_API_KEY=xxxx BROWSERBASE_PROJECT_ID==xxxx python main.py
+poetry install
 ```
 
+### 2. Create `.env` file:
+
+```bash
+cp .env.example .env
+```
+
+### 3. Get your Browserbase API Key:
+
+- [Create an account](https://www.browserbase.com/sign-up) or [log in to Browserbase](https://www.browserbase.com/sign-in)
+- Copy your API Key and Project ID [from your Settings page](https://www.browserbase.com/settings) into the `.env` file
+
+### 4. Run the script:
+
+```bash
+python main.py # or poetry run python main.py
+```
 
 ## Further reading
 
-- [See how to leverage the Session Debugger for faster development](https://docs.browserbase.com/guides/browser-remote-control#accelerate-your-local-development-with-remote-debugging)
-- [Learn more about Browserbase infrastructure](https://docs.browserbase.com/under-the-hood)
-- [Explore the Sessions API](https://docs.browserbase.com/api-reference/list-all-sessions)
+- [Explore the Browserbase Python SDK](https://docs.browserbase.com/sdk/python)
+- [Explore the Selenium Python API](https://selenium-python.readthedocs.io/api.html)
