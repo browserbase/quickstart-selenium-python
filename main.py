@@ -1,40 +1,67 @@
+from typing import Dict
+
 from selenium import webdriver
 from selenium.webdriver.remote.remote_connection import RemoteConnection
-from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
-import requests
+from browserbase import Browserbase
+from dotenv import load_dotenv
 import os
 
-def create_session():
-    url = 'https://www.browserbase.com/v1/sessions'
-    headers = {'Content-Type': 'application/json', 'x-bb-api-key': os.environ["BROWSERBASE_API_KEY"]}
-    response = requests.post(url, json={ "projectId": os.environ["BROWSERBASE_PROJECT_ID"] }, headers=headers)
-    return response.json()['id']
+load_dotenv()
+
+BROWSERBASE_API_KEY = os.getenv("BROWSERBASE_API_KEY")
+BROWSERBASE_PROJECT_ID = os.getenv("BROWSERBASE_PROJECT_ID")
+
+bb = Browserbase(api_key=BROWSERBASE_API_KEY)
 
 
-class CustomRemoteConnection(RemoteConnection):
-    _session_id = None
+class BrowserbaseConnection(RemoteConnection):
+    """
+    Manage a single session with Browserbase.
+    """
 
-    def __init__(self, remote_server_addr: str, session_id: str):
-        super().__init__(remote_server_addr)
-        self._session_id = session_id
+    session_id: str
 
-    def get_remote_connection_headers(self, parsed_url, keep_alive=False):
-        headers = super().get_remote_connection_headers(parsed_url, keep_alive)
-        headers.update({'x-bb-api-key': os.environ["BROWSERBASE_API_KEY"]})
-        headers.update({'session-id': self._session_id})
-        return headers
+    def __init__(self, session_id: str, *args, **kwargs):  # type: ignore
+        super().__init__(*args, **kwargs)  # type: ignore
+        self.session_id = session_id
+
+    def get_remote_connection_headers(  # type: ignore
+        self, parsed_url: str, keep_alive: bool = False
+    ) -> Dict[str, str]:
+        headers = super().get_remote_connection_headers(parsed_url, keep_alive)  # type: ignore
+
+        # Update headers to include the Browserbase required information
+        headers["x-bb-api-key"] = BROWSERBASE_API_KEY
+        headers["session-id"] = self.session_id
+
+        return headers  # type: ignore
 
 
-def run():
-    session_id = create_session()
-    custom_conn = CustomRemoteConnection('http://connect.browserbase.com/webdriver', session_id)
-    options = webdriver.ChromeOptions()
-    options.debugger_address = "localhost:9223"
-    driver = webdriver.Remote(custom_conn, options=options)
-    driver.get("https://www.browserbase.com")
-    get_title = driver.title
-    print(get_title)
-    # Make sure to quit the driver so your session is ended!
-    driver.quit()
+def run() -> None:
+    # Use the custom class to create and connect to a new browser session
+    session = bb.sessions.create(project_id=BROWSERBASE_PROJECT_ID)
+    connection = BrowserbaseConnection(session.id, session.selenium_remote_url)
+    driver = webdriver.Remote(
+        command_executor=connection, options=webdriver.ChromeOptions()  # type: ignore
+    )
 
-run()
+    # Print a bit of info about the browser we've connected to
+    print(
+        "Connected to Browserbase",
+        f"{driver.name} version {driver.caps['browserVersion']}",  # type: ignore
+    )
+
+    try:
+        # Perform our browser commands
+        driver.get("https://www.sfmoma.org")
+        print(f"At URL: {driver.current_url} | Title: {driver.title}")
+        assert driver.current_url == "https://www.sfmoma.org/"
+        assert driver.title == "SFMOMA"
+
+    finally:
+        # Make sure to quit the driver so your session is ended!
+        driver.quit()
+
+
+if __name__ == "__main__":
+    run()
