@@ -12,16 +12,15 @@
 </p>
 <br/>
 
-## Selenium with Browserbase
+# Selenium with Browserbase
 
-## Introduction
+Browserbase is the developer platform for reliable browser automation. Get complete control over headless browsers and leverage Browserbase's powerful features:
 
-Browserbase is the best developer platform to reliably run, manage, and monitor headless browsers.
+- 🚀 [Cloud Infrastructure](https://docs.browserbase.com/under-the-hood) - Scalable, reliable browser infrastructure
+- 🕵️ [Stealth Mode](https://docs.browserbase.com/features/stealth-mode) - Undetectable browser automation
+- 🔍 [Session Debugger](https://docs.browserbase.com/features/sessions) - Debug and replay browser sessions
 
-Get browsers' complete control and leverage Browserbase's
-[Infrastructure](https://docs.browserbase.com/under-the-hood), [Stealth Mode](https://docs.browserbase.com/features/stealth-mode), and
-[Session Debugger](https://docs.browserbase.com/features/sessions) to power your automation, test suites,
-and LLM data retrievals.
+Perfect for web automation, testing, and data collection.
 
 **Get started in under one minute** with Selenium.
 
