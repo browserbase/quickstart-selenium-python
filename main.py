@@ -9,7 +9,6 @@ import os
 load_dotenv()
 
 BROWSERBASE_API_KEY = os.getenv("BROWSERBASE_API_KEY")
-BROWSERBASE_PROJECT_ID = os.getenv("BROWSERBASE_PROJECT_ID")
 
 bb = Browserbase(api_key=BROWSERBASE_API_KEY)
 
@@ -39,17 +38,17 @@ class BrowserbaseConnection(RemoteConnection):
 
 def run() -> None:
     # Use the custom class to create and connect to a new browser session
-    session = bb.sessions.create(project_id=BROWSERBASE_PROJECT_ID)
+    session = bb.sessions.create()
     connection = BrowserbaseConnection(session.id, session.selenium_remote_url)
     driver = webdriver.Remote(
         command_executor=connection, options=webdriver.ChromeOptions()  # type: ignore
     )
 
-    # Print a bit of info about the browser we've connected to
     print(
         "Connected to Browserbase",
         f"{driver.name} version {driver.caps['browserVersion']}",  # type: ignore
     )
+    print(f"Live debug URL: https://browserbase.com/sessions/{session.id}")
 
     try:
         # Perform our browser commands
